@@ -1,9 +1,9 @@
 import json
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views.animal_requests import delete_animal, get_all_animals, get_single_animal, create_animal, update_animal
+from views.animal_requests import delete_animal, get_all_animals, get_single_animal, create_animal, update_animal, get_animals_by_location_id, get_animals_by_status
 from views.location_requests import get_single_location, get_all_locations,create_location, delete_location
-from views.employee_requests import get_single_employee, get_all_employees,create_employee, delete_employee
+from views.employee_requests import get_single_employee, get_all_employees,create_employee, delete_employee, get_employees_by_location_id
 from views.customer_requests import create_customer, get_single_customer,get_all_customers, delete_customer, get_customers_by_email
 
 # Here's a class. It inherits from another class.
@@ -12,10 +12,9 @@ from views.customer_requests import create_customer, get_single_customer,get_all
 # common purpose is to respond to HTTP requests from a client.
 class HandleRequests(BaseHTTPRequestHandler):
     # add this import to the top of the file
-  from urllib.parse import urlparse, parse_qs
     
     # replace the parse_url function in the class
-  def parse_url(self, path):
+    def parse_url(self, path):
         """Parse the url into the resource and id"""
         parsed_url = urlparse(path)
         path_params = parsed_url.path.split('/')  # ['', 'animals', 1]
@@ -33,7 +32,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         return (resource, pk)  # This is a tuple
 
     # Here's a class function
-  def _set_headers(self, status):
+    def _set_headers(self, status):
         # Notice this Docstring also includes information about the arguments passed to the function
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
         headers on the response
@@ -47,7 +46,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     # Another method! This supports requests with the OPTIONS verb.
-  def do_OPTIONS(self):
+    def do_OPTIONS(self):
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
@@ -72,7 +71,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
-  def do_GET(self):
+    def do_GET(self):
         self._set_headers(200)
 
         response = {}
@@ -111,12 +110,21 @@ class HandleRequests(BaseHTTPRequestHandler):
             # see if the query dictionary has an email key
             if query.get('email') and resource == 'customers':
                 response = get_customers_by_email(query['email'][0])
+                
+            if query.get('location_id') and resource == 'animals':
+                response = get_animals_by_location_id(query['location_id'][0]) 
+                
+            if query.get('status') and resource == 'animals':
+                response = get_animals_by_status(query['status'][0]) 
+                
+            if query.get('location_id') and resource == 'employees':
+                response = get_employees_by_location_id(query['location_id'][0])          
 
-        self.wfile.write(response.encode())  
+        self.wfile.write(response.encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
-  def do_POST(self):
+    def do_POST(self):
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
@@ -161,7 +169,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any PUT request.
 
-  def do_PUT(self):
+    def do_PUT(self):
       self._set_headers(204)
       content_len = int(self.headers.get('content-length', 0))
       post_body = self.rfile.read(content_len)
@@ -180,7 +188,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         
   # Delete Method 
   
-  def do_DELETE(self):
+    def do_DELETE(self):
     # Set a 204 response code
         self._set_headers(204)
 

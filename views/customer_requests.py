@@ -3,7 +3,10 @@ import json
 from models import Customer
 
 CUSTOMERS= [{"customer": "Kad Mine",
-    "id": 4}]
+    "id": 4, 
+            "address": "244 Highway",
+            "email": "kadmeni@gmail.com",
+            "password" : "log me in"}]
 
 
 
@@ -25,19 +28,13 @@ def create_customer(customer):
   
   
 def delete_customer(id):
-    # Initial -1 value for animal index, in case one isn't found
-    customer_index = -1
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
 
-    # Iterate the ANIMALS list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, customer in enumerate(CUSTOMERS):
-        if customer["id"] == id:
-            # Found the animal. Store the current index.
-            customer_index = index
-
-    # If the animal was found, use pop(int) to remove it from list
-    if customer_index >= 0:
-        CUSTOMERS.pop(customer_index)
+        db_cursor.execute("""
+        DELETE FROM customer
+        WHERE id = ?
+        """, (id, ))
 
 def get_single_customer(id):
     # Variable to hold the found animal, if it exists

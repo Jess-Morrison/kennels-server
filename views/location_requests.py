@@ -32,19 +32,13 @@ def create_location(location):
     return location
   
 def delete_location(id):
-    # Initial -1 value for animal index, in case one isn't found
-    location_index = -1
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
 
-    # Iterate the ANIMALS list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, location in enumerate(LOCATIONS):
-        if location["id"] == id:
-            # Found the animal. Store the current index.
-            location_index = index
-
-    # If the animal was found, use pop(int) to remove it from list
-    if location_index >= 0:
-        LOCATIONS.pop(location_index)
+        db_cursor.execute("""
+        DELETE FROM location
+        WHERE id = ?
+        """, (id, ))
 
 def get_single_location(id):
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -106,4 +100,30 @@ def get_all_locations():
             locations.append(location.__dict__)
 
     # Use `json` package to properly serialize list as JSON
+    return json.dumps(locations)
+
+def get_location_by_id(id):
+
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        select
+            l.id,
+            l.name,
+            l.address
+        
+        from Location l
+        WHERE l.id = ?
+        """, ( id, ))
+
+        locations = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            location = Location(row['id'], row['name'], row['address'])
+            locations.append(location.__dict__)
+
     return json.dumps(locations)
