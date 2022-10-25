@@ -131,3 +131,30 @@ def get_employees_by_location_id(location_id):
             employees.append(employee.__dict__)
 
     return json.dumps(employees)
+
+
+def update_employee(id, new_employee):
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Employee
+            SET
+                id = ?,
+                name = ?,
+                location_id = ?,
+               
+        WHERE id = ?
+        """, (new_employee['id'], new_employee['name'],
+              new_employee['location_id'], id))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True

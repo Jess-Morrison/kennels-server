@@ -127,3 +127,30 @@ def get_location_by_id(id):
             locations.append(location.__dict__)
 
     return json.dumps(locations)
+
+
+def update_location(id, new_location):
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Location
+            SET
+                id = ?,
+                name = ?,
+                address = ?,
+                
+        WHERE id = ?
+        """, (new_location['id'], new_location['name'],
+              new_location['address'],id ))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True

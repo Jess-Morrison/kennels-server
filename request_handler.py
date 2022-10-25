@@ -2,9 +2,9 @@ import json
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views.animal_requests import delete_animal, get_all_animals, get_single_animal, create_animal, update_animal, get_animals_by_location_id, get_animals_by_status
-from views.location_requests import get_single_location, get_all_locations,create_location, delete_location
-from views.employee_requests import get_single_employee, get_all_employees,create_employee, delete_employee, get_employees_by_location_id
-from views.customer_requests import create_customer, get_single_customer,get_all_customers, delete_customer, get_customers_by_email
+from views.location_requests import get_single_location, get_all_locations,create_location, delete_location, update_location
+from views.employee_requests import get_single_employee, get_all_employees,create_employee, delete_employee, get_employees_by_location_id, update_employee
+from views.customer_requests import create_customer, get_single_customer,get_all_customers, delete_customer, get_customers_by_email, update_customer
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -125,27 +125,39 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
     def do_POST(self):
-        self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
-
-        # Convert JSON string to a Python dictionary
         post_body = json.loads(post_body)
 
-        # Parse the URL
+    # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
-        # Initialize new animal
-        new_animal = None
-        
+        success = False
 
-        # Add a new animal to the list. Don't worry about
-        # the orange squiggle, you'll define the create_animal
-        # function next.
         if resource == "animals":
-            new_animal = create_animal(post_body)
-            
+          success = update_animal(id, post_body)
+          
+        if resource == "locations":
+          success = update_location(id, post_body)
+          
+        if resource == "employees":
+          success = update_employee(id, post_body)
+          
+        if resource == "customers":
+          success = update_customer(id, post_body)
+          
+    # rest of the elif's
 
+        if success:
+          self._set_headers(204)
+        else:
+          self._set_headers(404)
+
+          self.wfile.write("".encode())
+            
+        new_animal = None
+        if resource == "locations":
+            new_animal = create_animal(post_body)
         # Encode the new animal and send in response
             self.wfile.write(f"{new_animal}".encode())
 
