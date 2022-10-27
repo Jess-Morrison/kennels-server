@@ -1,9 +1,3 @@
-# import json
-# from http.server import BaseHTTPRequestHandler, HTTPServer
-# from views.animal_requests import delete_animal, get_all_animals, get_single_animal, create_animal, update_animal
-# from views.location_requests import get_single_location, get_all_locations,create_location, delete_location
-# from views.employee_requests import get_single_employee, get_all_employees,create_employee, delete_employee
-# from views.customer_requests import create_customer, get_single_customer,get_all_customers, delete_customer
 
 # # Here's a class. It inherits from another class.
 # # For now, think of a class as a container for functions that
@@ -33,7 +27,7 @@
 
 #     # Here's a class function
 #     def _set_headers(self, status):
-#         # Notice this Docstring also includes information about the arguments passed to the function
+#     # Notice this Docstring also includes information about the arguments passed to the function
 #         """Sets the status code, Content-Type and Access-Control-Allow-Origin
 #         headers on the response
 
@@ -84,24 +78,21 @@
 
 #             else:
 #                 response = f"{get_all_animals()}"
-                
-#         if resource == "locations":   
+#         if resource == "locations":
 #             if id is not None:
-#                 response = f"{get_single_location(id)}" 
+#                 response = f"{get_single_location(id)}"
 #             else:
-#                 response = f"{get_all_locations()}"  
-                
-#         if resource == "employees":   
+#                 response = f"{get_all_locations()}"
+#         if resource == "employees":
 #             if id is not None:
-#                 response = f"{get_single_employee(id)}" 
+#                 response = f"{get_single_employee(id)}"
 #             else:
-#                 response = f"{get_all_employees()}" 
-                
-#         if resource == "customers":   
+#                 response = f"{get_all_employees()}"
+#         if resource == "customers":
 #             if id is not None:
-#                 response = f"{get_single_customer(id)}" 
+#                 response = f"{get_single_customer(id)}"
 #             else:
-#                 response = f"{get_all_customers()}"         
+#                 response = f"{get_all_customers()}"
 
 #         self.wfile.write(response.encode())
 #         # Set the response code to 'Ok'
@@ -121,6 +112,7 @@
 
 #     # Here's a method on the class that overrides the parent's method.
 #     # It handles any POST request.
+#
 #     def do_POST(self):
 #         self._set_headers(201)
 #         content_len = int(self.headers.get('content-length', 0))
@@ -134,14 +126,14 @@
 
 #         # Initialize new animal
 #         new_animal = None
-        
+
 
 #         # Add a new animal to the list. Don't worry about
 #         # the orange squiggle, you'll define the create_animal
 #         # function next.
 #         if resource == "animals":
 #             new_animal = create_animal(post_body)
-            
+
 
 #         # Encode the new animal and send in response
 #             self.wfile.write(f"{new_animal}".encode())
@@ -149,19 +141,19 @@
 #         new_location = None
 #         if resource == "locations":
 #             new_location = create_location(post_body)
-        
+
 #             self.wfile.write(f"{new_location}".encode())
-        
+
 #         new_employee = None
 #         if resource == "employees":
 #             new_employee = create_employee(post_body)
-        
+
 #             self.wfile.write(f"{new_employee}".encode())
-        
+
 #         new_customer = None
 #         if resource == "customers":
 #             new_customer = create_customer(post_body)
-        
+
 #             self.wfile.write(f"{new_customer}".encode())
 #     # Here's a method on the class that overrides the parent's method.
 #     # It handles any PUT request.
@@ -182,9 +174,9 @@
 #     # Encode the new animal and send in response
 #       self.wfile.write("".encode())
 #       self.do_POST()
-        
-#   # Delete Method 
-  
+
+#   # Delete Method
+
 #     def do_DELETE(self):
 #     # Set a 204 response code
 #         self._set_headers(204)
@@ -205,7 +197,7 @@
 
 #     # Encode the new animal and send in response
 #         self.wfile.write("".encode())
-        
+
 
 #     # Delete a single animal from the list
 #         if resource == "employees":

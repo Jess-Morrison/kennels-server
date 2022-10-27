@@ -3,7 +3,7 @@ import json
 from models import Customer
 
 CUSTOMERS= [{"customer": "Kad Mine",
-    "id": 4, 
+            "id": 4,
             "address": "244 Highway",
             "email": "kadmeni@gmail.com",
             "password" : "log me in"}]
@@ -11,6 +11,7 @@ CUSTOMERS= [{"customer": "Kad Mine",
 
 
 def create_customer(customer):
+    """CREATE"""
     # Get the id value of the last animal in the list
     max_id = CUSTOMERS[-1]["id"]
 
@@ -25,9 +26,9 @@ def create_customer(customer):
 
     # Return the dictionary with `id` property added
     return customer
-  
-  
+
 def delete_customer(id):
+    """DELETE"""
     with sqlite3.connect("./kennel.sqlite3") as conn:
         db_cursor = conn.cursor()
 
@@ -37,6 +38,7 @@ def delete_customer(id):
         """, (id, ))
 
 def get_single_customer(id):
+    """GET SINGLE"""
     # Variable to hold the found animal, if it exists
     requested_customer = None
 
@@ -52,6 +54,7 @@ def get_single_customer(id):
 
 
 def get_all_customers():
+    """GET ALL"""
     # Open a connection to the database
     with sqlite3.connect("./kennel.sqlite3") as conn:
 
@@ -92,7 +95,7 @@ def get_all_customers():
 
 
 def get_customers_by_email(email):
-
+    """GET BY EMAIL"""
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -113,12 +116,16 @@ def get_customers_by_email(email):
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            customer = Customer(row['id'], row['name'], row['address'], row['email'] , row['password'])
+            customer = Customer(row['id'], row['name'],
+                                row['address'],
+                                row['email'] ,
+                                row['password'])
             customers.append(customer.__dict__)
 
     return json.dumps(customers)
 
 def update_customer(id, new_customer):
+    """UPDATE"""
     with sqlite3.connect("./kennel.sqlite3") as conn:
         db_cursor = conn.cursor()
 
